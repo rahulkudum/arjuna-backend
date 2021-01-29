@@ -8,6 +8,14 @@ const webinarSchema = new Schema(
    type: String,
    required: true,
   },
+  speaker: {
+   type: String,
+   required: true,
+  },
+  users: {
+   type: Array,
+   required: true,
+  },
  },
  { timestamps: true }
 );

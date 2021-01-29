@@ -7,6 +7,7 @@ const userSchema = new Schema(
   number: {
    type: Number,
    required: true,
+   unique: true,
   },
 
   name: {
@@ -19,10 +20,10 @@ const userSchema = new Schema(
   //    required: true,
   //   },
 
-  //   school: {
-  //    type: String,
-  //    required: true,
-  //   },
+  school: {
+   type: String,
+   required: true,
+  },
 
   //   city: {
   //    type: String,
