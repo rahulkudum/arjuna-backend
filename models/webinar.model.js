@@ -2,23 +2,20 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const webinarSchema = new Schema(
- {
-  name: {
-   type: String,
-   required: true,
-  },
-  speaker: {
-   type: String,
-   required: true,
-  },
-  users: {
-   type: Array,
-   required: true,
-  },
+const webinarSchema = new Schema({
+ name: {
+  type: String,
+  required: true,
  },
- { timestamps: true }
-);
+ speaker: {
+  type: String,
+  required: true,
+ },
+ users: {
+  type: Array,
+  required: true,
+ },
+});
 
 const Webinar = mongoose.model("Webinar", webinarSchema);
 
