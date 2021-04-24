@@ -18,9 +18,11 @@ connection.once("open", () => {
 
 const usersRouter = require("./routes/users");
 const webinarsRouter = require("./routes/webinars");
+const pwebinarsRouter = require("./routes/pwebinars");
 
 app.use("/user", usersRouter);
 app.use("/webinar", webinarsRouter);
+app.use("/pwebinar", pwebinarsRouter);
 
 const port = process.env.PORT || 5000;
 

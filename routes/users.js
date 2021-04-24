@@ -20,7 +20,7 @@ router.route("/add").post((req, res) => {
  const email = req.body.email;
  const dob = req.body.dob;
  const gender = req.body.gender;
- const webinars = [{ id: req.body.webinarid, name: req.body.webinarname }];
+ const webinars = [req.body.webinarid];
  const webinarscount = 1;
 
  const newUser = new User({
@@ -48,13 +48,49 @@ router.route("/add").post((req, res) => {
   .save()
   .then((resp) => {
    Webinar.findById(req.body.webinarid).then((webinar) => {
-    webinar.users.push({ id: resp._id, name: resp.name });
+    webinar.users.push(resp._id);
     webinar.userscount = webinar.users.length;
     webinar
      .save()
      .then((response) => res.json("sucessfully saved the new user"))
      .catch((err) => console.log(err));
    });
+  })
+  .catch((err) => console.log(err));
+});
+
+router.route("/addadmin").post((req, res) => {
+ const name = req.body.name;
+ const number = Number(req.body.number);
+ const email = req.body.email;
+ const dob = req.body.dob;
+ const gender = req.body.gender;
+
+ const newUser = new User({
+  number,
+  name,
+  email,
+  dob,
+  gender,
+  beyr10: "",
+  beyr12: "",
+  eeyr: "",
+  educationid: "",
+  volunteerwork: "",
+  arjunapoc: "",
+  communicationmethod: "",
+  subscriptionstatus: "",
+  lastcontact: "",
+  courses: [],
+  coursescount: 0,
+  webinars: [],
+  webinarscount: 0,
+ });
+
+ newUser
+  .save()
+  .then((resp) => {
+   res.json(resp);
   })
   .catch((err) => console.log(err));
 });
@@ -91,7 +127,7 @@ router.route("/webinaradd").post((req, res) => {
   .then((webinar) => {
    let found = false;
    webinar.users.map((val, i) => {
-    if (val.id === req.body.id) {
+    if (JSON.stringify(val) === JSON.stringify(req.body.id)) {
      found = true;
     }
    });
@@ -99,10 +135,10 @@ router.route("/webinaradd").post((req, res) => {
    if (!found) {
     User.findById(req.body.id)
      .then((user) => {
-      user.webinars.push({ id: req.body.webinarid, name: webinar.name });
+      user.webinars.push(req.body.webinarid);
       user.webinarscount = user.webinars.length;
       user.save().then((resp) => {
-       webinar.users.push({ id: req.body.id, name: user.name });
+       webinar.users.push(req.body.id);
        webinar.userscount = webinar.users.length;
        webinar
         .save()
@@ -112,6 +148,27 @@ router.route("/webinaradd").post((req, res) => {
      })
      .catch((err) => console.log(err));
    } else res.send("");
+  })
+  .catch((err) => console.log(err));
+});
+
+router.route("/updateadd").post((req, res) => {
+ User.findById(req.body.id)
+  .then((user) => {
+   user.webinars.push(req.body.webinarid);
+   user.webinarscount = user.webinars.length;
+   user.email = req.body.email;
+   user.dob = req.body.dob;
+   user.save().then(() => {
+    Webinar.findById(req.body.webinarid).then((webinar) => {
+     webinar.users.push(req.body.id);
+     webinar.userscount = webinar.users.length;
+     webinar
+      .save()
+      .then((response) => res.json("sucessfully saved the new user"))
+      .catch((err) => console.log(err));
+    });
+   });
   })
   .catch((err) => console.log(err));
 });
