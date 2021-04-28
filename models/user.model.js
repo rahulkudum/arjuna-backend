@@ -14,7 +14,7 @@ const userSchema = new Schema({
  educationid: String,
  webinars: Array,
  courses: Array,
- volunteerwork: String,
+ volunteerwork: Array,
  arjunapoc: String,
  communicationmethod: String,
  subscriptionstatus: String,

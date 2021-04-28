@@ -8,9 +8,13 @@ router.route("/").get((req, res) => {
 });
 
 router.route("/import").get((req, res) => {
- User.updateMany({ lastcontact: "" }, { webinars: [], courses: [], webinarscount: 0, coursescount: 0 }, { multi: true }, (error, resp) => {
-  if (!error) res.send("sucessfully");
-  else res.send(error);
+ //  User.updateMany({ lastcontact: "" }, { webinars: [], courses: [], webinarscount: 0, coursescount: 0 }, { multi: true }, (error, resp) => {
+ //   if (!error) res.send("sucessfully");
+ //   else res.send(error);
+ //  });
+ User.find({ educationid: "60867279888d3473507ad8d9" }, (err, files) => {
+  if (!err) res.json(files);
+  else res.send(err);
  });
 });
 

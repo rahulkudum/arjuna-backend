@@ -60,6 +60,7 @@ router.route("/update").post((req, res) => {
 router.route("/addusers").post((req, res) => {
  const id = req.body.id;
  const wid = req.body.wid;
+ const eid = req.body.eid;
  const details = req.body.details;
 
  Pwebinar.findById(wid).then((pwebinar) => {
@@ -88,17 +89,33 @@ router.route("/addusers").post((req, res) => {
           if (!found) {
            user.webinars.push(id);
            user.webinarscount = user.webinars.length;
+           if (user.email === "" && val[3] !== "") {
+            user.email = val[3];
+           }
+           if (user.gender === "" && val[2] !== "") {
+            user.gender = val[2];
+           }
            user.save().then(() => {
             webinar.users.push(user._id);
-            webinar.userscount = webinar.users.length;
             webinar
              .save()
              .then(() => {
-              console.log("success");
+              // console.log("success");
               i++;
               if (i + j === details.length) {
                console.log(i, j);
-               res.send("completed");
+               Webinar.findById(id)
+                .then((webin) => {
+                 webin.userscount = webin.users.length;
+                 console.log(webin.userscount);
+                 webin
+                  .save()
+                  .then(() => {
+                   res.send("completed");
+                  })
+                  .catch((err) => console.log(err));
+                })
+                .catch((err) => console.log(err));
               }
              })
              .catch((err) => console.log(err));
@@ -109,7 +126,18 @@ router.route("/addusers").post((req, res) => {
            if (i + j === details.length) {
             console.log(i, j);
 
-            res.send("completed");
+            Webinar.findById(id)
+             .then((webin) => {
+              webin.userscount = webin.users.length;
+              console.log(webin.userscount);
+              webin
+               .save()
+               .then(() => {
+                res.send("completed");
+               })
+               .catch((err) => console.log(err));
+             })
+             .catch((err) => console.log(err));
            }
           }
          })
@@ -117,8 +145,9 @@ router.route("/addusers").post((req, res) => {
        } else {
         const name = val[1];
         const number = Number(val[0]);
-        const email = val[2];
-        const gender = val[3];
+        const email = val[3];
+        const gender = val[2];
+        const educationid = eid;
         const webinars = [id];
         const webinarscount = 1;
 
@@ -131,7 +160,7 @@ router.route("/addusers").post((req, res) => {
          beyr10: "",
          beyr12: "",
          eeyr: "",
-         educationid: "",
+         educationid,
          volunteerwork: "",
          arjunapoc: "",
          communicationmethod: "",
@@ -148,15 +177,25 @@ router.route("/addusers").post((req, res) => {
          .then((resp) => {
           Webinar.findById(id).then((webinar) => {
            webinar.users.push(resp._id);
-           webinar.userscount = webinar.users.length;
            webinar
             .save()
             .then(() => {
-             console.log("Success 2");
+             //  console.log("Success 2");
              j++;
              if (i + j === details.length) {
               console.log(i, j);
-              res.send("completed");
+              Webinar.findById(id)
+               .then((webin) => {
+                webin.userscount = webin.users.length;
+                // console.log(webin.userscount);
+                webin
+                 .save()
+                 .then(() => {
+                  res.send("completed");
+                 })
+                 .catch((err) => console.log(err));
+               })
+               .catch((err) => console.log(err));
              }
             })
             .catch((err) => console.log(err));
