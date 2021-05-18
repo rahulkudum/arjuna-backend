@@ -7,6 +7,7 @@ const webinarSchema = new Schema({
  date: String,
  guest: String,
  institute: String,
+ image: String,
  users: Array,
  userscount: Number,
 });

@@ -8,14 +8,11 @@ router.route("/").get((req, res) => {
 });
 
 router.route("/import").get((req, res) => {
- //  User.updateMany({ lastcontact: "" }, { webinars: [], courses: [], webinarscount: 0, coursescount: 0 }, { multi: true }, (error, resp) => {
- //   if (!error) res.send("sucessfully");
- //   else res.send(error);
+ //  User.findById("603c9cea25e4ea42dc70f55f").then((user) => {
+ //   user.webinars = [user.webinar[0]];
+ //   user.webinarscount = 1;
+ //   user.save(() => res.json("success")).catch((err) => console.log(err));
  //  });
- User.find({ educationid: "60867279888d3473507ad8d9" }, (err, files) => {
-  if (!err) res.json(files);
-  else res.send(err);
- });
 });
 
 router.route("/add").post((req, res) => {
@@ -24,6 +21,7 @@ router.route("/add").post((req, res) => {
  const email = req.body.email;
  const dob = req.body.dob;
  const gender = req.body.gender;
+ const role = req.body.role;
  const webinars = [req.body.webinarid];
  const webinarscount = 1;
 
@@ -38,6 +36,7 @@ router.route("/add").post((req, res) => {
   eeyr: "",
   educationid: "",
   volunteerwork: "",
+  role,
   arjunapoc: "",
   communicationmethod: "",
   subscriptionstatus: "",
@@ -69,6 +68,7 @@ router.route("/addadmin").post((req, res) => {
  const email = req.body.email;
  const dob = req.body.dob;
  const gender = req.body.gender;
+ const role = req.body.gender;
 
  const newUser = new User({
   number,
@@ -82,6 +82,7 @@ router.route("/addadmin").post((req, res) => {
   educationid: "",
   volunteerwork: "",
   arjunapoc: "",
+  role,
   communicationmethod: "",
   subscriptionstatus: "",
   lastcontact: "",

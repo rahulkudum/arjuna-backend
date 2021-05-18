@@ -15,6 +15,7 @@ const userSchema = new Schema({
  webinars: Array,
  courses: Array,
  volunteerwork: Array,
+ role: String,
  arjunapoc: String,
  communicationmethod: String,
  subscriptionstatus: String,

@@ -15,6 +15,7 @@ router.route("/add").post((req, res) => {
  const date = req.body.date;
  const guest = req.body.guest;
  const institute = req.body.institute;
+ const image = req.body.image;
  const users = [];
  const userscount = 0;
 
@@ -24,6 +25,7 @@ router.route("/add").post((req, res) => {
   date,
   guest,
   institute,
+  image,
   users,
   userscount,
  });
