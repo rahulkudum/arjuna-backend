@@ -266,7 +266,7 @@ var returnRouter = function (io) {
       count2++;
       if (count2 === webinar.users.length) {
        wbm
-        .start({ showBrowser: true })
+        .start()
         .then(async () => {
          //  console.log(qrCodeData);
          //  res.send(qrCodeData);
