@@ -266,21 +266,22 @@ var returnRouter = function (io) {
       count2++;
       if (count2 === webinar.users.length) {
        wbm
-        .start({ qrCodeData: true, session: false })
-        .then(async (qrCodeData) => {
-         console.log(qrCodeData);
-         res.send(qrCodeData);
-         //  io.emit("wa", JSON.stringify(qrCodeData));
+        .start({})
+        .then(async () => {
+         //  console.log(qrCodeData);
+         //  res.send(qrCodeData);
+         //  //  io.emit("wa", JSON.stringify(qrCodeData));
 
-         let scanned = true;
-         scanned = await wbm.waitQRCode();
-         if (scanned) {
-          for (let contact of contacts) {
-           result = await wbm.sendTo(contact, msg);
-           //  io.emit("wa", JSON.stringify(result));
-          }
+         //  let scanned = true;
+         //  scanned = await wbm.waitQRCode();
+         //  if (scanned) {
+         for (let contact of contacts) {
+          result = await wbm.sendTo(contact, msg);
+          //  io.emit("wa", JSON.stringify(result));
          }
+         //  }
          finalresult = await wbm.end();
+         res.send("done");
          //  io.emit("wa", JSON.stringify(finalresult));
         })
         .catch((err) => {
