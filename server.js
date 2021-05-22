@@ -1,13 +1,18 @@
 const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-
 const app = express();
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
+const server = require("http").createServer(app);
+const cors = require("cors");
+const io = require("socket.io")(server, {
+ cors: {
+  origin: "*",
+  credentials: true,
+ },
+});
+const mongoose = require("mongoose");
 
 app.use(cors());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
 const uri = "mongodb+srv://arjuna:arjuna@cluster0.ypjlp.mongodb.net/arjuna?retryWrites=true&w=majority";
 
@@ -18,31 +23,19 @@ connection.once("open", () => {
 });
 
 const usersRouter = require("./routes/users");
-const webinarsRouter = require("./routes/webinars");
+const webinarsRouter = require("./routes/webinars")(io);
 const pwebinarsRouter = require("./routes/pwebinars");
 
 app.use("/user", usersRouter);
 app.use("/webinar", webinarsRouter);
 app.use("/pwebinar", pwebinarsRouter);
 
-const port = process.env.PORT || 5000;
-
-app.listen(port, () => {
- console.log(`server is running on port `);
+io.on("connection", (socket) => {
+ console.log("connection established");
 });
 
-// const app = require("express")();
-// const http = require("http").createServer(app);
-// const io = require("socket.io")(http);
+const port = process.env.PORT || 5000;
 
-// io.on("connection", (socket) => {
-//  socket.on("message", (req) => {
-//   console.log(req);
-//   io.emit("message", "response1");
-//   io.emit("message", "response2");
-//  });
-// });
-
-// http.listen(4000, function () {
-//  console.log("listening on port 4000");
-// });
+server.listen(port, () => {
+ console.log("listening on port " + port);
+});
