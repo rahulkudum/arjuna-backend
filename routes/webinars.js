@@ -294,8 +294,6 @@ router.route("/email").get((req, res) => {
  const id = req.query.webinarid;
  let contacts = [];
 
- console.log(details, id);
-
  Webinar.findById(id).then((webinar) => {
   Pwebinar.findById(webinar.webinarid).then((pwebinar) => {
    webinar.users.map((val, i) => {
@@ -328,7 +326,7 @@ router.route("/email").get((req, res) => {
        },
       });
       res.setHeader("Content-Type", "text/event-stream");
-
+      let count = 0;
       for (let contact of contacts) {
        for (let property in contact) {
         details.subject = details.subject.replace(new RegExp(`{{${property}}}`, "g"), contact[property]);
@@ -366,10 +364,11 @@ router.route("/email").get((req, res) => {
          } else {
           res.write("data: " + JSON.stringify("fail" + contact.email + "-" + contact.name) + "\n\n");
          }
-         if (contact === contacts[contacts.length - 1]) {
+         if (count === contacts.length - 1) {
           res.write("data: " + JSON.stringify("Result") + "\n\n");
          }
         }
+        count++;
        });
       }
      }

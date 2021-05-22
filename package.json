@@ -19,8 +19,7 @@
   "ical-generator": "^2.1.0",
   "mongoose": "^5.11.13",
   "nodemailer": "^6.6.0",
-  "wbm": "^1.1.14",
-  "websocket": "^1.0.34"
+  "wbm": "^1.1.14"
  },
  "devDependencies": {
   "nodemon": "^2.0.7"
