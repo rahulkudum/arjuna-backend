@@ -2,6 +2,10 @@ const router = require("express").Router();
 let Webinar = require("../models/webinar.model");
 let User = require("../models/user.model");
 let Pwebinar = require("../models/pwebinar.model");
+let Wa = require("../models/wa.model");
+const wbm = require("./wa.js");
+const nodemailer = require("nodemailer");
+let ical = require("ical-generator");
 
 router.route("/").get((req, res) => {
  Webinar.find()
@@ -238,6 +242,154 @@ router.route("/userdelete").post((req, res) => {
     .catch((err) => console.log(err));
   })
   .catch((err) => console.log(err));
+});
+
+router.route("/wa").get((req, res) => {
+ const msg = req.query.msg;
+ const id = req.query.webinarid;
+ let contacts = [];
+
+ Webinar.findById(id).then((webinar) => {
+  Pwebinar.findById(webinar.webinarid).then((pwebinar) => {
+   webinar.users.map((val, i) => {
+    User.findById(val).then((student) => {
+     contacts.push({
+      phone: "91" + student.number,
+      name: student.name,
+      webinar: pwebinar.name,
+      date: webinar.date,
+      speaker: webinar.speaker,
+      guest: webinar.guest,
+     });
+     if (i === webinar.users.length - 1) {
+      wbm
+       .start({ qrCodeData: true, session: false })
+       .then(async (qrCodeData) => {
+        console.log(qrCodeData);
+        res.setHeader("Content-Type", "text/event-stream");
+        res.write("data: " + JSON.stringify(qrCodeData) + "\n\n");
+        let scanned = true;
+        scanned = await wbm.waitQRCode();
+        if (scanned) {
+         for (let contact of contacts) {
+          result = await wbm.sendTo(contact, msg);
+          res.write("data: " + JSON.stringify(result) + "\n\n");
+         }
+        }
+        finalresult = await wbm.end();
+        res.write("data: " + JSON.stringify(finalresult) + "\n\n");
+       })
+       .catch((err) => {
+        console.log(err);
+       });
+     }
+    });
+   });
+  });
+ });
+});
+
+router.route("/email").get((req, res) => {
+ let details = JSON.parse(req.query.details);
+ const id = req.query.webinarid;
+ let contacts = [];
+
+ console.log(details, id);
+
+ Webinar.findById(id).then((webinar) => {
+  Pwebinar.findById(webinar.webinarid).then((pwebinar) => {
+   webinar.users.map((val, i) => {
+    User.findById(val).then((student) => {
+     contacts.push({
+      email: student.email,
+      name: student.name,
+      webinar: pwebinar.name,
+      date: webinar.date,
+      speaker: webinar.speaker,
+      guest: webinar.guest,
+     });
+     if (i === webinar.users.length - 1) {
+      const calendar = ical({ name: "testing cal name", description: "testing cal description" });
+      if (details.calendar) {
+       const event = calendar.createEvent({
+        start: new Date(details.calendar.date + "T" + details.calendar.stime),
+        end: new Date(details.calendar.date + "T" + details.calendar.etime),
+        summary: details.calendar.title,
+        description: details.calendar.description,
+        location: details.calendar.location,
+       });
+      }
+
+      let transporter = nodemailer.createTransport({
+       service: details.service,
+       auth: {
+        user: details.emailid,
+        pass: details.password,
+       },
+      });
+      res.setHeader("Content-Type", "text/event-stream");
+
+      for (let contact of contacts) {
+       for (let property in contact) {
+        details.subject = details.subject.replace(new RegExp(`{{${property}}}`, "g"), contact[property]);
+        details.body = details.body.replace(new RegExp(`{{${property}}}`, "g"), contact[property]);
+       }
+       let mailOptions = {
+        from: details.emailid,
+        to: contact.email,
+        subject: details.subject,
+        text: details.body,
+       };
+
+       if (details.calendar) {
+        mailOptions.icalEvent = {
+         filename: "webinar.ics",
+         method: "publish",
+         content: calendar.toString(),
+        };
+       }
+       if (details.attachments.length !== 0) {
+        mailOptions.attachments = [];
+        for (let attachment of details.attachments) {
+         mailOptions.attachments.push({ path: attachment });
+        }
+       }
+
+       transporter.sendMail(mailOptions, (err, data) => {
+        if (err) {
+         console.log(err);
+         res.send(err);
+        } else {
+         console.log(data);
+         if (data.accepted.length > 0) {
+          res.write("data: " + JSON.stringify("success" + contact.email + "-" + contact.name) + "\n\n");
+         } else {
+          res.write("data: " + JSON.stringify("fail" + contact.email + "-" + contact.name) + "\n\n");
+         }
+         if (contact === contacts[contacts.length - 1]) {
+          res.write("data: " + JSON.stringify("Result") + "\n\n");
+         }
+        }
+       });
+      }
+     }
+    });
+   });
+  });
+ });
+});
+
+router.route("/ical").get((req, res) => {
+ const calendar = ical({ name: "testing cal name", description: "testing cal description" });
+ const event = calendar.createEvent({
+  start: new Date(),
+  summary: "testing event name",
+  description: "test event description",
+  location: "ZOOM",
+ });
+ event.allDay(true);
+ console.log(calendar.toString());
+ calendar.serve(res);
 });
 
 router.route("/delete").post((req, res) => {

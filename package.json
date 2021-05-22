@@ -1,23 +1,28 @@
 {
-  "name": "arjunadb",
-  "version": "1.0.0",
-  "description": "arjuna database",
-  "main": "server.js",
-  "scripts": {
-   "start": "node server.js"
-  },
-  "keywords": [],
-  "author": "rahul",
-  "license": "ISC",
-  "engines": {
-    "node": "12.18.3"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "mongoose": "^5.11.13"
-    },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
-  }
+ "name": "arjunadb",
+ "version": "1.0.0",
+ "description": "arjuna database",
+ "main": "server.js",
+ "scripts": {
+  "start": "node server.js"
+ },
+ "keywords": [],
+ "author": "rahul",
+ "license": "ISC",
+ "engines": {
+  "node": "14.16.1"
+ },
+ "dependencies": {
+  "cors": "^2.8.5",
+  "express": "^4.17.1",
+  "http": "*",
+  "ical-generator": "^2.1.0",
+  "mongoose": "^5.11.13",
+  "nodemailer": "^6.6.0",
+  "wbm": "^1.1.14",
+  "websocket": "^1.0.34"
+ },
+ "devDependencies": {
+  "nodemon": "^2.0.7"
+ }
 }

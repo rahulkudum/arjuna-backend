@@ -164,16 +164,14 @@ router.route("/updateadd").post((req, res) => {
    user.webinarscount = user.webinars.length;
    user.email = req.body.email;
    user.dob = req.body.dob;
-   user.save().then(() => {
-    Webinar.findById(req.body.webinarid).then((webinar) => {
-     webinar.users.push(req.body.id);
-     webinar.userscount = webinar.users.length;
-     webinar
-      .save()
-      .then((response) => res.json("sucessfully saved the new user"))
-      .catch((err) => console.log(err));
-    });
-   });
+   user.role = req.body.role;
+   user.gender = req.body.gender;
+   user
+    .save()
+    .then(() => {
+     res.json("sucessfully saved the new user");
+    })
+    .catch((err) => console.log(err));
   })
   .catch((err) => console.log(err));
 });
