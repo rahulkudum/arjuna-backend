@@ -365,7 +365,7 @@ var returnRouter = function (io) {
         transporter.sendMail(mailOptions, (err, data) => {
          if (err) {
           console.log(err);
-          io.emit("email", JSON.stringify("error" + contact.email + "-" + contact.name));
+          io.emit("email", JSON.stringify("error " + err + contact.email + "-" + contact.name));
           count++;
          } else {
           console.log(data);
