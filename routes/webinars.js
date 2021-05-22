@@ -326,6 +326,7 @@ router.route("/email").get((req, res) => {
        },
       });
       res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Access-Control-Allow-Origin", "*");
       let count = 0;
       for (let contact of contacts) {
        for (let property in contact) {
