@@ -290,6 +290,10 @@ router.route("/wa").get((req, res) => {
 });
 
 router.route("/email").get((req, res) => {
+ res.setHeader("Access-Control-Allow-Headers", Origin, Content - Type, Accept);
+ res.setHeader("Access-Control-Allow-Origin", "*");
+ res.setHeader("Access-Control-Allow-Credentials", true);
+ res.setHeader("Access-Control-Allow-Methods", GET, POST, OPTIONS);
  let details = JSON.parse(req.query.details);
  const id = req.query.webinarid;
  let contacts = [];
@@ -326,7 +330,7 @@ router.route("/email").get((req, res) => {
        },
       });
       res.setHeader("Content-Type", "text/event-stream");
-      res.setHeader("Access-Control-Allow-Origin", "*");
+
       let count = 0;
       for (let contact of contacts) {
        for (let property in contact) {
