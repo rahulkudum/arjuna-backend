@@ -7,12 +7,6 @@ const app = express();
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 app.use(cors());
-app.use((req, res) => {
- res.header("Access-Control-Allow-Headers", "Origin, Content - Type, Accept");
- res.header("Access-Control-Allow-Origin", "*");
- res.header("Access-Control-Allow-Credentials", true);
- res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-});
 
 const uri = "mongodb+srv://arjuna:arjuna@cluster0.ypjlp.mongodb.net/arjuna?retryWrites=true&w=majority";
 
