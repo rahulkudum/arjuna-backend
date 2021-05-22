@@ -3,7 +3,7 @@ let Webinar = require("../models/webinar.model");
 let User = require("../models/user.model");
 let Pwebinar = require("../models/pwebinar.model");
 let Wa = require("../models/wa.model");
-const wbm = require("./wa.js");
+const wbm = require("wbm");
 const nodemailer = require("nodemailer");
 let ical = require("ical-generator");
 
