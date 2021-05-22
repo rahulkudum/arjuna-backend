@@ -275,13 +275,14 @@ var returnRouter = function (io) {
          //  let scanned = true;
          //  scanned = await wbm.waitQRCode();
          //  if (scanned) {
+         res.send("done");
          for (let contact of contacts) {
           result = await wbm.sendTo(contact, msg);
           //  io.emit("wa", JSON.stringify(result));
          }
          //  }
          finalresult = await wbm.end();
-         res.send("done");
+
          //  io.emit("wa", JSON.stringify(finalresult));
         })
         .catch((err) => {
