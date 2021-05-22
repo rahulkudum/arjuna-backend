@@ -399,6 +399,7 @@ var returnRouter = function (io) {
   });
   event.allDay(true);
   console.log(calendar.toString());
+  io.emit("email", JSON.stringify("Result"));
   calendar.serve(res);
  });
 
@@ -406,7 +407,6 @@ var returnRouter = function (io) {
   Webinar.findByIdAndDelete(req.body.id, (err) => {
    if (!err) res.send("sucessfully deleted");
    else {
-    io.emit("email", JSON.stringify("Result"));
     res.send(err);
    }
   });
