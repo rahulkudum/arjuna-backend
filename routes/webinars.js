@@ -265,30 +265,29 @@ var returnRouter = function (io) {
       });
       count2++;
       if (count2 === webinar.users.length) {
-       res.send("done");
-       //  wbm
-       //   .start({ showBrowser: true })
-       //   .then(async () => {
-       //    //  console.log(qrCodeData);
-       //    //  res.send(qrCodeData);
-       //    //  //  io.emit("wa", JSON.stringify(qrCodeData));
+       wbm
+        .start({ showBrowser: true })
+        .then(async () => {
+         //  console.log(qrCodeData);
+         //  res.send(qrCodeData);
+         //  //  io.emit("wa", JSON.stringify(qrCodeData));
 
-       //    //  let scanned = true;
-       //    //  scanned = await wbm.waitQRCode();
-       //    //  if (scanned) {
-       //    for (let contact of contacts) {
-       //     result = await wbm.sendTo(contact, msg);
-       //     //  io.emit("wa", JSON.stringify(result));
-       //    }
-       //    //  }
-       //    finalresult = await wbm.end();
-       //    res.send("done");
-       //    //  io.emit("wa", JSON.stringify(finalresult));
-       //   })
-       //   .catch((err) => {
-       //    console.log(err);
-       //    //  io.emit("wa", JSON.stringify("error" + err));
-       //   });
+         //  let scanned = true;
+         //  scanned = await wbm.waitQRCode();
+         //  if (scanned) {
+         for (let contact of contacts) {
+          result = await wbm.sendTo(contact, msg);
+          //  io.emit("wa", JSON.stringify(result));
+         }
+         //  }
+         finalresult = await wbm.end();
+         res.send("done");
+         //  io.emit("wa", JSON.stringify(finalresult));
+        })
+        .catch((err) => {
+         console.log(err);
+         //  io.emit("wa", JSON.stringify("error" + err));
+        });
       }
      });
     });
