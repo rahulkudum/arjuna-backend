@@ -325,7 +325,6 @@ router.route("/email").get((req, res) => {
         pass: details.password,
        },
       });
-      res.setHeader("Content-Type", "text/event-stream");
 
       let count = 0;
       for (let contact of contacts) {
