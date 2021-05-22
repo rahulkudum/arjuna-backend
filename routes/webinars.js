@@ -405,7 +405,10 @@ var returnRouter = function (io) {
  router.route("/delete").post((req, res) => {
   Webinar.findByIdAndDelete(req.body.id, (err) => {
    if (!err) res.send("sucessfully deleted");
-   else res.send(err);
+   else {
+    io.emit("email", JSON.stringify("Result"));
+    res.send(err);
+   }
   });
  });
 
