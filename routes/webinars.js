@@ -260,7 +260,7 @@ var returnRouter = function (io) {
 
   client.on("ready", () => {
    console.log("Client is ready!");
-   client.sendMessage("919849847681@c.us", "chant and be happy");
+   client.sendMessage("919849847681@c.us", "chant and be happy!!!");
   });
 
   client.initialize();
