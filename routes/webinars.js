@@ -249,51 +249,66 @@ var returnRouter = function (io) {
   const msg = req.body.msg;
   const id = req.body.webinarid;
   let contacts = [];
+  const { Client } = require("whatsapp-web.js");
 
-  Webinar.findById(id).then((webinar) => {
-   Pwebinar.findById(webinar.webinarid).then((pwebinar) => {
-    let count2 = 0;
-    webinar.users.map((val, i) => {
-     User.findById(val).then((student) => {
-      contacts.push({
-       phone: "91" + student.number,
-       name: student.name,
-       webinar: pwebinar.name,
-       date: webinar.date,
-       speaker: webinar.speaker,
-       guest: webinar.guest,
-      });
-      count2++;
-      if (count2 === webinar.users.length) {
-       wbm
-        .start()
-        .then(async () => {
-         //  console.log(qrCodeData);
-         //  res.send(qrCodeData);
-         //  //  io.emit("wa", JSON.stringify(qrCodeData));
+  const client = new Client();
 
-         //  let scanned = true;
-         //  scanned = await wbm.waitQRCode();
-         //  if (scanned) {
-         res.send("done");
-         for (let contact of contacts) {
-          result = await wbm.sendTo(contact, msg);
-          //  io.emit("wa", JSON.stringify(result));
-         }
-         //  }
-         finalresult = await wbm.end();
-
-         //  io.emit("wa", JSON.stringify(finalresult));
-        })
-        .catch((err) => {
-         console.log(err);
-         //  io.emit("wa", JSON.stringify("error" + err));
-        });
-      }
-     });
-    });
-   });
+  client.on("qr", (qr) => {
+   console.log("qr");
+   io.emit("qr", JSON.stringify(qr));
   });
+
+  client.on("ready", () => {
+   console.log("Client is ready!");
+   client.sendMessage("919849847681@c.us", "chant and be happy");
+  });
+
+  client.initialize();
+
+  // Webinar.findById(id).then((webinar) => {
+  //  Pwebinar.findById(webinar.webinarid).then((pwebinar) => {
+  //   let count2 = 0;
+  //   webinar.users.map((val, i) => {
+  //    User.findById(val).then((student) => {
+  //     contacts.push({
+  //      phone: "91" + student.number,
+  //      name: student.name,
+  //      webinar: pwebinar.name,
+  //      date: webinar.date,
+  //      speaker: webinar.speaker,
+  //      guest: webinar.guest,
+  //     });
+  //     count2++;
+  //     if (count2 === webinar.users.length) {
+  //      wbm
+  //       .start()
+  //       .then(async () => {
+  //        //  console.log(qrCodeData);
+  //        //  res.send(qrCodeData);
+  //        //  //  io.emit("wa", JSON.stringify(qrCodeData));
+
+  //        //  let scanned = true;
+  //        //  scanned = await wbm.waitQRCode();
+  //        //  if (scanned) {
+  //        res.send("done");
+  //        for (let contact of contacts) {
+  //         result = await wbm.sendTo(contact, msg);
+  //         //  io.emit("wa", JSON.stringify(result));
+  //        }
+  //        //  }
+  //        finalresult = await wbm.end();
+
+  //        //  io.emit("wa", JSON.stringify(finalresult));
+  //       })
+  //       .catch((err) => {
+  //        console.log(err);
+  //        //  io.emit("wa", JSON.stringify("error" + err));
+  //       });
+  //     }
+  //    });
+  //   });
+  //  });
+  // });
  });
 
  router.route("/email").post((req, res) => {
@@ -331,16 +346,9 @@ var returnRouter = function (io) {
 
        let transporter = nodemailer.createTransport({
         service: "gmail",
-        host: "smtp.gmail.com",
-        secureConnection: false,
-        port: 587,
-        domains: ["gmail.com", "googlemail.com"],
         auth: {
          user: "rahulkudum@gmail.com",
          pass: "Rahulguru@113",
-        },
-        tls: {
-         rejectUnauthorized: false,
         },
        });
 
