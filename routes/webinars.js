@@ -318,74 +318,81 @@ var returnRouter = function (io) {
       count2++;
       if (count2 === webinar.users.length) {
        res.send("done");
-       // const calendar = ical({ name: "testing cal name", description: "testing cal description" });
-       //  if (details.calendar) {
-       //   const event = calendar.createEvent({
-       //    start: new Date(details.calendar.date + "T" + details.calendar.stime),
-       //    end: new Date(details.calendar.date + "T" + details.calendar.etime),
-       //    summary: details.calendar.title,
-       //    description: details.calendar.description,
-       //    location: details.calendar.location,
-       //   });
-       //  }
+       const calendar = ical({ name: "testing cal name", description: "testing cal description" });
+       if (details.calendar) {
+        const event = calendar.createEvent({
+         start: new Date(details.calendar.date + "T" + details.calendar.stime),
+         end: new Date(details.calendar.date + "T" + details.calendar.etime),
+         summary: details.calendar.title,
+         description: details.calendar.description,
+         location: details.calendar.location,
+        });
+       }
 
-       //  let transporter = nodemailer.createTransport({
-       //   service: details.service,
-       //   auth: {
-       //    user: details.emailid,
-       //    pass: details.password,
-       //   },
-       //  });
+       let transporter = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        secureConnection: false,
+        port: 587,
+        domains: ["gmail.com", "googlemail.com"],
+        auth: {
+         user: "rahulkudum@gmail.com",
+         pass: "Rahulguru@113",
+        },
+        tls: {
+         rejectUnauthorized: false,
+        },
+       });
 
-       //  let count = 0;
-       //  for (let contact of contacts) {
-       //   console.log(contact, contacts);
-       //   for (let property in contact) {
-       //    details.subject = details.subject.replace(new RegExp(`{{${property}}}`, "g"), contact[property]);
-       //    details.body = details.body.replace(new RegExp(`{{${property}}}`, "g"), contact[property]);
-       //   }
-       //   let mailOptions = {
-       //    from: details.emailid,
-       //    to: contact.email,
-       //    subject: details.subject,
-       //    text: details.body,
-       //   };
+       let count = 0;
+       for (let contact of contacts) {
+        console.log(contact, contacts);
+        for (let property in contact) {
+         details.subject = details.subject.replace(new RegExp(`{{${property}}}`, "g"), contact[property]);
+         details.body = details.body.replace(new RegExp(`{{${property}}}`, "g"), contact[property]);
+        }
+        let mailOptions = {
+         from: details.emailid,
+         to: contact.email,
+         subject: details.subject,
+         text: details.body,
+        };
 
-       //   if (details.calendar) {
-       //    mailOptions.icalEvent = {
-       //     filename: "webinar.ics",
-       //     method: "publish",
-       //     content: calendar.toString(),
-       //    };
-       //   }
-       //   if (details.attachments.length !== 0) {
-       //    mailOptions.attachments = [];
-       //    for (let attachment of details.attachments) {
-       //     mailOptions.attachments.push({ path: attachment });
-       //    }
-       //   }
+        if (details.calendar) {
+         mailOptions.icalEvent = {
+          filename: "webinar.ics",
+          method: "publish",
+          content: calendar.toString(),
+         };
+        }
+        if (details.attachments.length !== 0) {
+         mailOptions.attachments = [];
+         for (let attachment of details.attachments) {
+          mailOptions.attachments.push({ path: attachment });
+         }
+        }
 
-       //   transporter.sendMail(mailOptions, (err, data) => {
-       //    if (err) {
-       //     console.log(err);
-       //     io.emit("email", JSON.stringify("error " + err + contact.email + "-" + contact.name));
-       //     count++;
-       //    } else {
-       //     console.log(data);
-       //     if (data.accepted.length > 0) {
-       //      io.emit("email", JSON.stringify("success" + contact.email + "-" + contact.name));
-       //      count++;
-       //     } else {
-       //      io.emit("email", JSON.stringify("fail" + contact.email + "-" + contact.name));
-       //      count++;
-       //     }
-       //     if (count === contacts.length) {
-       //      io.emit("email", JSON.stringify("Result"));
-       //      res.send("completed" + count);
-       //     }
-       //    }
-       //   });
-       //  }
+        transporter.sendMail(mailOptions, (err, data) => {
+         if (err) {
+          console.log(err);
+          io.emit("email", JSON.stringify("error " + err + contact.email + "-" + contact.name));
+          count++;
+         } else {
+          console.log(data);
+          if (data.accepted.length > 0) {
+           io.emit("email", JSON.stringify("success" + contact.email + "-" + contact.name));
+           count++;
+          } else {
+           io.emit("email", JSON.stringify("fail" + contact.email + "-" + contact.name));
+           count++;
+          }
+          if (count === contacts.length) {
+           io.emit("email", JSON.stringify("Result"));
+           res.send("completed" + count);
+          }
+         }
+        });
+       }
       }
      });
     });

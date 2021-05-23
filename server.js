@@ -39,3 +39,18 @@ const port = process.env.PORT || 5000;
 server.listen(port, () => {
  console.log("listening on port " + port);
 });
+
+// TWILIO 17_nWpBSJ8tw7UMMvYVeNW_PZkTeoq06Iw5k-zTJ
+
+// const accountSid = "ACbff238b651aa9e4e3897654e746bedb3";
+// const authToken = "a462c3b769b404a52fc37bf170abe364";
+// const client = require("twilio")(accountSid, authToken);
+
+// client.messages
+//  .create({
+//   body: "Your appointment is coming up on 22nd at zoom",
+//   from: "whatsapp:+14155238886",
+//   to: "whatsapp:+919133431764",
+//  })
+//  .then((message) => console.log(message.sid))
+//  .done();
