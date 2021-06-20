@@ -62,10 +62,22 @@ router.route("/verify").post(async (req, res) => {
 
 router.route("/dummy").post(async (req, res) => {
  console.log(req.body);
- const name = JSON.stringify(req.body, null, 4);
+ const name = req.body.payload.payment.entity.notes.name;
+ const email = req.body.payload.payment.entity.email;
+ const phno = req.body.payload.payment.entity.contact;
+ const date = new Date();
+ const book = req.body.payload.payment.entity.notes.book;
+ const amount = req.body.payload.payment.entity.amount;
+ const address = req.body.payload.payment.entity.notes.address;
 
  const newOrder = new Order({
   name,
+  phno,
+  email,
+  date,
+  book,
+  amount,
+  address,
  });
 
  newOrder
