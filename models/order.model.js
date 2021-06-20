@@ -9,6 +9,7 @@ const orderSchema = new Schema({
  email: String,
  date: Date,
  address: String,
+ process: Boolean,
 });
 
 const Order = mongoose.model("Order", orderSchema);

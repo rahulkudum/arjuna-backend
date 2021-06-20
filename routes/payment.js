@@ -10,7 +10,7 @@ const razorpay = new Razorpay({
 
 router.route("/pay").post(async (req, res) => {
  const payment_capture = 1;
- const amount = 50;
+ const amount = 150;
  const currency = "INR";
 
  console.log(req);
@@ -45,10 +45,22 @@ router.route("/verify").post(async (req, res) => {
 
  if (digest === req.headers["x-razorpay-signature"]) {
   console.log("request is legit");
-  const name = JSON.stringify(req.body, null, 4);
+  const name = req.body.payload.payment.entity.notes.name;
+  const email = req.body.payload.payment.entity.email;
+  const phno = req.body.payload.payment.entity.contact;
+  const date = new Date();
+  const book = req.body.payload.payment.entity.notes.book;
+  const amount = req.body.payload.payment.entity.amount;
+  const address = req.body.payload.payment.entity.notes.address;
 
   const newOrder = new Order({
    name,
+   phno,
+   email,
+   date,
+   book,
+   amount,
+   address,
   });
 
   newOrder
