@@ -62,7 +62,7 @@ router.route("/verify").post(async (req, res) => {
 
 router.route("/dummy").post(async (req, res) => {
  console.log(req.body);
- const name = req.body.name;
+ const name = JSON.stringify(req.body, null, 4);
 
  const newOrder = new Order({
   name,
