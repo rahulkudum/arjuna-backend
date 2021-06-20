@@ -45,7 +45,8 @@ router.route("/verify").post(async (req, res) => {
 
  if (digest === req.headers["x-razorpay-signature"]) {
   console.log("request is legit");
-  const name = JSON.stringify(req.body, null, 4);
+  const robj = JSON.parse(req.body);
+  const name = robj.payload.payment.entity.email;
 
   const newOrder = new Order({
    name,
