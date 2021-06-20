@@ -45,7 +45,7 @@ router.route("/verify").post(async (req, res) => {
 
  if (digest === req.headers["x-razorpay-signature"]) {
   console.log("request is legit");
-  const name = req.body.paylod.payment.entity.email;
+  const name = JSON.stringify(req.body, null, 4);
 
   const newOrder = new Order({
    name,
@@ -59,6 +59,20 @@ router.route("/verify").post(async (req, res) => {
   // pass it
  }
  res.json({ status: "ok" });
+});
+
+router.route("/dummy").post(async (req, res) => {
+ console.log(req.body);
+ const name = req.body.name;
+
+ const newOrder = new Order({
+  name,
+ });
+
+ newOrder
+  .save()
+  .then((resp) => res.json(resp))
+  .catch((err) => console.log(err));
 });
 
 module.exports = router;
