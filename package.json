@@ -19,6 +19,7 @@
   "ical-generator": "^2.1.0",
   "mongoose": "^5.11.13",
   "nodemailer": "^6.6.0",
+  "razorpay": "^2.0.6",
   "socket.io": "^4.1.2",
   "whatsapp-web.js": "^1.12.6"
  },
