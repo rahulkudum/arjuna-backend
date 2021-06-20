@@ -45,8 +45,16 @@ router.route("/verify").post(async (req, res) => {
 
  if (digest === req.headers["x-razorpay-signature"]) {
   console.log("request is legit");
-  // process it
-  require("fs").writeFileSync("payment1.json", JSON.stringify(req.body, null, 4));
+  const name = req.body.paylod.payment.entity.email;
+
+  const newWebinar = new Pwebinar({
+   name,
+  });
+
+  newWebinar
+   .save()
+   .then((resp) => res.json(resp))
+   .catch((err) => console.log(err));
  } else {
   // pass it
  }
