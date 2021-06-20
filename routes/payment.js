@@ -1,11 +1,17 @@
 const router = require("express").Router();
 let Order = require("../models/order.model");
-
+const nodemailer = require("nodemailer");
 const Razorpay = require("razorpay");
 
 const razorpay = new Razorpay({
  key_id: "rzp_test_WQG7sTrp3IgCeQ",
  key_secret: "968V3t6qgs7EZ72McP1wx4gQ",
+});
+
+router.route("/").get((req, res) => {
+ Order.find()
+  .then((order) => res.json(order))
+  .catch((err) => console.log(err));
 });
 
 router.route("/pay").post(async (req, res) => {
@@ -65,8 +71,31 @@ router.route("/verify").post(async (req, res) => {
 
   newOrder
    .save()
-   .then((resp) => res.json(resp))
+   .then((resp) => console.log(resp))
    .catch((err) => console.log(err));
+
+  let transporter = nodemailer.createTransport({
+   service: "gmail",
+   auth: {
+    user: "rahulkudum@gmail.com",
+    pass: "Rahulguru@113",
+   },
+  });
+
+  let mailOptions = {
+   from: "rahulkudum@gmail.com",
+   to: email,
+   subject: "AOC book order",
+   text: "Thank for Purchasing AOC, you will be getting the bood very soon",
+  };
+
+  transporter.sendMail(mailOptions, (err, data) => {
+   if (err) {
+    res.send(err);
+   } else {
+    res.send("sucess");
+   }
+  });
  } else {
   // pass it
  }
