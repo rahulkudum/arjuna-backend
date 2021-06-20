@@ -14,6 +14,49 @@ router.route("/").get((req, res) => {
   .catch((err) => console.log(err));
 });
 
+router.route("/process").post((req, res) => {
+ Order.findById(req.body.id)
+  .then((order) => {
+   let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+     type: "OAuth2",
+     user: "rahulkudum@gmail.com",
+     clientId: "526565895378-7ep38biscsl6s9c369ef1att91djcfin.apps.googleusercontent.com",
+     clientSecret: "vIxbXFxBlUBX_ELVBaPnO6FG",
+     refreshToken: "1//04_FOv5PdrJfDCgYIARAAGAQSNwF-L9IrYrndoS--3KXeoQWldfaJa5n88JjW1H1AxGl6A5cswCT5cmqBL3wl3sjPllxBbHdO2_U",
+     accessToken:
+      "ya29.a0AfH6SMC9bM3-D7owC5E_gAXNgLMWR45oJlWDbdO8DTuAohiTfV4l9XEtGWOSDpuse8LLXF9yYZ0ivZFsVp-39QJRmDEWWUXnDsfpIOe83ppNFyUPqCcBbVwwqgMhloMNCmYRs-G2kaakAdTOZA8P4Z8fa9Tm",
+     expires: 3590,
+    },
+   });
+
+   let mailOptions = {
+    from: "rahulkudum@gmail.com",
+    to: order.email,
+    subject: "AOC book order is placed",
+    text: "Your order is placed, you will be getting the book in 3-5 bussiness days",
+   };
+
+   transporter.sendMail(mailOptions, (err, data) => {
+    if (err) {
+     res.send(err);
+    } else {
+     order.process = true;
+     order
+      .save()
+      .then(() => {
+       res.json("sucessfully processed the order");
+      })
+      .catch((err) => console.log(err));
+    }
+   });
+  })
+  .catch((err) => console.log(err));
+});
+
 router.route("/pay").post(async (req, res) => {
  const payment_capture = 1;
  const amount = 150;
@@ -54,7 +97,7 @@ router.route("/verify").post(async (req, res) => {
   const name = req.body.payload.payment.entity.notes.name;
   const email = req.body.payload.payment.entity.email;
   const phno = req.body.payload.payment.entity.contact;
-  const date = new Date();
+  const date = new Date().toISOString().slice(0, 10);
   const book = req.body.payload.payment.entity.notes.book;
   const amount = req.body.payload.payment.entity.amount;
   const address = req.body.payload.payment.entity.notes.address;
@@ -75,10 +118,18 @@ router.route("/verify").post(async (req, res) => {
    .catch((err) => console.log(err));
 
   let transporter = nodemailer.createTransport({
-   service: "gmail",
+   host: "smtp.gmail.com",
+   port: 465,
+   secure: true,
    auth: {
+    type: "OAuth2",
     user: "rahulkudum@gmail.com",
-    pass: "Rahulguru@113",
+    clientId: "526565895378-7ep38biscsl6s9c369ef1att91djcfin.apps.googleusercontent.com",
+    clientSecret: "vIxbXFxBlUBX_ELVBaPnO6FG",
+    refreshToken: "1//04_FOv5PdrJfDCgYIARAAGAQSNwF-L9IrYrndoS--3KXeoQWldfaJa5n88JjW1H1AxGl6A5cswCT5cmqBL3wl3sjPllxBbHdO2_U",
+    accessToken:
+     "ya29.a0AfH6SMC9bM3-D7owC5E_gAXNgLMWR45oJlWDbdO8DTuAohiTfV4l9XEtGWOSDpuse8LLXF9yYZ0ivZFsVp-39QJRmDEWWUXnDsfpIOe83ppNFyUPqCcBbVwwqgMhloMNCmYRs-G2kaakAdTOZA8P4Z8fa9Tm",
+    expires: 3590,
    },
   });
 
@@ -86,7 +137,7 @@ router.route("/verify").post(async (req, res) => {
    from: "rahulkudum@gmail.com",
    to: email,
    subject: "AOC book order",
-   text: "Thank for Purchasing AOC, you will be getting the bood very soon",
+   text: "Thank for Purchasing AOC, you will be getting the book very soon",
   };
 
   transporter.sendMail(mailOptions, (err, data) => {
@@ -102,29 +153,36 @@ router.route("/verify").post(async (req, res) => {
 });
 
 router.route("/dummy").post(async (req, res) => {
- console.log(req.body);
- const name = req.body.payload.payment.entity.notes.name;
- const email = req.body.payload.payment.entity.email;
- const phno = req.body.payload.payment.entity.contact;
- const date = new Date();
- const book = req.body.payload.payment.entity.notes.book;
- const amount = req.body.payload.payment.entity.amount;
- const address = req.body.payload.payment.entity.notes.address;
-
- const newOrder = new Order({
-  name,
-  phno,
-  email,
-  date,
-  book,
-  amount,
-  address,
+ let transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+   type: "OAuth2",
+   user: "rahulkudum@gmail.com",
+   clientId: "526565895378-7ep38biscsl6s9c369ef1att91djcfin.apps.googleusercontent.com",
+   clientSecret: "vIxbXFxBlUBX_ELVBaPnO6FG",
+   refreshToken: "1//04_FOv5PdrJfDCgYIARAAGAQSNwF-L9IrYrndoS--3KXeoQWldfaJa5n88JjW1H1AxGl6A5cswCT5cmqBL3wl3sjPllxBbHdO2_U",
+   accessToken:
+    "ya29.a0AfH6SMC9bM3-D7owC5E_gAXNgLMWR45oJlWDbdO8DTuAohiTfV4l9XEtGWOSDpuse8LLXF9yYZ0ivZFsVp-39QJRmDEWWUXnDsfpIOe83ppNFyUPqCcBbVwwqgMhloMNCmYRs-G2kaakAdTOZA8P4Z8fa9Tm",
+   expires: 3590,
+  },
  });
 
- newOrder
-  .save()
-  .then((resp) => res.json(resp))
-  .catch((err) => console.log(err));
+ let mailOptions = {
+  from: "rahulkudum@gmail.com",
+  to: "rahulrayalhk@gmail.com",
+  subject: "AOC book order",
+  text: "Thank for Purchasing AOC, you will be getting the book very soon 1",
+ };
+
+ transporter.sendMail(mailOptions, (err, data) => {
+  if (err) {
+   res.send(err);
+  } else {
+   res.send("sucess");
+  }
+ });
 });
 
 module.exports = router;

@@ -7,7 +7,7 @@ const orderSchema = new Schema({
  amount: String,
  phno: String,
  email: String,
- date: Date,
+ date: String,
  address: String,
  process: Boolean,
 });
