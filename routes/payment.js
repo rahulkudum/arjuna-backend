@@ -47,11 +47,11 @@ router.route("/verify").post(async (req, res) => {
   console.log("request is legit");
   const name = req.body.paylod.payment.entity.email;
 
-  const newWebinar = new Pwebinar({
+  const newOrder = new Order({
    name,
   });
 
-  newWebinar
+  newOrder
    .save()
    .then((resp) => res.json(resp))
    .catch((err) => console.log(err));
