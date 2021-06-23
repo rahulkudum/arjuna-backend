@@ -30,14 +30,16 @@ router.route("/findinstitute").post((req, res) => {
 
 router.route("/add").post((req, res) => {
  const name = req.body.name;
+ const subtitle = req.body.subtitle;
+ const series = req.body.series;
  const description = req.body.description;
- const level = req.body.level;
  const webinarinstances = [];
 
  const newWebinar = new Pwebinar({
   name,
+  subtitle,
+  series,
   description,
-  level,
   webinarinstances,
  });
 

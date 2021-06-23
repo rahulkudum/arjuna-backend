@@ -4,8 +4,9 @@ const Schema = mongoose.Schema;
 
 const pwebinarSchema = new Schema({
  name: String,
+ subtitle: String,
+ series: String,
  description: String,
- level: String,
  webinarinstances: Array,
 });
 

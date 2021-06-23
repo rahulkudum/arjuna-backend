@@ -16,6 +16,7 @@ var returnRouter = function (io) {
   const webinarid = req.body.webinarid;
   const speaker = req.body.speaker;
   const date = req.body.date;
+  const time = req.body.time;
   const guest = req.body.guest;
   const institute = req.body.institute;
   const image = req.body.image;
@@ -26,6 +27,7 @@ var returnRouter = function (io) {
    webinarid,
    speaker,
    date,
+   time,
    guest,
    institute,
    image,
@@ -100,6 +102,9 @@ var returnRouter = function (io) {
             if (user.gender === "" && val[2] !== "") {
              user.gender = val[2];
             }
+            if (user.role === "" && val[4] !== "") {
+             user.role = val[4];
+            }
             user.save().then(() => {
              webinar.users.push(user._id);
              webinar
@@ -152,6 +157,7 @@ var returnRouter = function (io) {
          const number = Number(val[0]);
          const email = val[3];
          const gender = val[2];
+         const role = val[4];
          const educationid = eid;
          const webinars = [id];
          const webinarscount = 1;
@@ -162,6 +168,7 @@ var returnRouter = function (io) {
           email,
           dob: "",
           gender,
+          role,
           beyr10: "",
           beyr12: "",
           eeyr: "",
@@ -241,72 +248,6 @@ var returnRouter = function (io) {
      .catch((err) => console.log(err));
    })
    .catch((err) => console.log(err));
- });
-
- router.route("/wa").post((req, res) => {
-  const msg = req.body.msg;
-  const id = req.body.webinarid;
-  let contacts = [];
-  const { Client } = require("whatsapp-web.js");
-
-  const client = new Client();
-
-  client.on("qr", (qr) => {
-   console.log("qr");
-   io.emit("qr", JSON.stringify(qr));
-  });
-
-  client.on("ready", () => {
-   console.log("Client is ready!");
-   client.sendMessage("919849847681@c.us", "chant and be happy!!");
-  });
-
-  client.initialize();
-
-  // Webinar.findById(id).then((webinar) => {
-  //  Pwebinar.findById(webinar.webinarid).then((pwebinar) => {
-  //   let count2 = 0;
-  //   webinar.users.map((val, i) => {
-  //    User.findById(val).then((student) => {
-  //     contacts.push({
-  //      phone: "91" + student.number,
-  //      name: student.name,
-  //      webinar: pwebinar.name,
-  //      date: webinar.date,
-  //      speaker: webinar.speaker,
-  //      guest: webinar.guest,
-  //     });
-  //     count2++;
-  //     if (count2 === webinar.users.length) {
-  //      wbm
-  //       .start()
-  //       .then(async () => {
-  //        //  console.log(qrCodeData);
-  //        //  res.send(qrCodeData);
-  //        //  //  io.emit("wa", JSON.stringify(qrCodeData));
-
-  //        //  let scanned = true;
-  //        //  scanned = await wbm.waitQRCode();
-  //        //  if (scanned) {
-  //        res.send("done");
-  //        for (let contact of contacts) {
-  //         result = await wbm.sendTo(contact, msg);
-  //         //  io.emit("wa", JSON.stringify(result));
-  //        }
-  //        //  }
-  //        finalresult = await wbm.end();
-
-  //        //  io.emit("wa", JSON.stringify(finalresult));
-  //       })
-  //       .catch((err) => {
-  //        console.log(err);
-  //        //  io.emit("wa", JSON.stringify("error" + err));
-  //       });
-  //     }
-  //    });
-  //   });
-  //  });
-  // });
  });
 
  router.route("/email").post((req, res) => {

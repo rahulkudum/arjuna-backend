@@ -137,7 +137,7 @@ router.route("/verify").post(async (req, res) => {
    from: "rahulkudum@gmail.com",
    to: email,
    subject: "AOC book order",
-   text: "Thank for Purchasing AOC, you will be getting the book very soon",
+   text: "Thank for Purchasing AOC, we have sent a mail regardibg the order details",
   };
 
   transporter.sendMail(mailOptions, (err, data) => {
