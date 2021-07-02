@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
+ orderid: String,
  name: String,
- book: String,
+ books: String,
  amount: String,
  phno: String,
  email: String,

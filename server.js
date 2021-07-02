@@ -26,11 +26,13 @@ const usersRouter = require("./routes/users");
 const webinarsRouter = require("./routes/webinars")(io);
 const pwebinarsRouter = require("./routes/pwebinars");
 const paymentsRouter = require("./routes/payment");
+const booksRouter = require("./routes/book");
 
 app.use("/user", usersRouter);
 app.use("/webinar", webinarsRouter);
 app.use("/pwebinar", pwebinarsRouter);
 app.use("/payment", paymentsRouter);
+app.use("/book", booksRouter);
 
 io.on("connection", (socket) => {
  console.log("connection established");
