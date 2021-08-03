@@ -1,6 +1,9 @@
 const router = require("express").Router();
 let User = require("../models/user.model");
 let Webinar = require("../models/webinar.model");
+const nodemailer = require("nodemailer");
+let ical = require("ical-generator");
+
 router.route("/").get((req, res) => {
  User.find()
   .then((users) => res.json(users))
@@ -55,7 +58,7 @@ router.route("/add").post((req, res) => {
     webinar.userscount = webinar.users.length;
     webinar
      .save()
-     .then((response) => res.json("sucessfully saved the new user"))
+     .then((response) => res.json(resp))
      .catch((err) => console.log(err));
    });
   })
@@ -147,7 +150,7 @@ router.route("/webinaradd").post((req, res) => {
        webinar.userscount = webinar.users.length;
        webinar
         .save()
-        .then((response) => res.json("sucessfully saved the new user"))
+        .then((response) => res.json(user))
         .catch((err) => console.log(err));
       });
      })
@@ -160,8 +163,6 @@ router.route("/webinaradd").post((req, res) => {
 router.route("/updateadd").post((req, res) => {
  User.findById(req.body.id)
   .then((user) => {
-   user.webinars.push(req.body.webinarid);
-   user.webinarscount = user.webinars.length;
    user.email = req.body.email;
    user.dob = req.body.dob;
    user.role = req.body.role;
@@ -170,6 +171,73 @@ router.route("/updateadd").post((req, res) => {
     .save()
     .then(() => {
      res.json("sucessfully saved the new user");
+    })
+    .catch((err) => console.log(err));
+  })
+  .catch((err) => console.log(err));
+});
+
+router.route("/sendemail").post((req, res) => {
+ User.findById(req.body.userid)
+  .then((user) => {
+   Webinar.findById(req.body.webinarid)
+    .then((webinar) => {
+     const calendar = ical({ name: "testing cal name", description: "testing cal description" });
+
+     const event = calendar.createEvent({
+      start: new Date(webinar.date + "T" + webinar.time),
+      end: new Date(webinar.date + "T" + webinar.time),
+      summary: req.body.wname,
+      description: "Arjuna Webinar",
+      location: "Zoom",
+     });
+
+     let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+       type: "OAuth2",
+       clientId: "526565895378-7ep38biscsl6s9c369ef1att91djcfin.apps.googleusercontent.com",
+       clientSecret: "vIxbXFxBlUBX_ELVBaPnO6FG",
+      },
+     });
+
+     transporter.on("token", (token) => {
+      console.log("A new access token was generated");
+      console.log("User: %s", token.user);
+      console.log("Access Token: %s", token.accessToken);
+      console.log("Expires: %s", new Date(token.expires));
+     });
+
+     let mailOptions = {
+      from: "rahulkudum@gmail.com",
+      to: user.email,
+      subject: `Sucessfully registered for the ${req.body.wname} webinar`,
+      text: `Hello ${user.name}!\n\nThank you for registering for the webinar!\n\nRespectfully,\nARJUNA Group Trust`,
+      auth: {
+       user: "rahulkudum@gmail.com",
+       refreshToken: "1//04VuBYRmdXT1UCgYIARAAGAQSNwF-L9IrgzO6XvS9xBRqcioijQXjKlW_X3su7HrVyyteGruXj9dxGOfxKcFAcX6QceW3lnqHF1Q",
+       accessToken:
+        "ya29.a0ARrdaM-rc2swL1xsfJIWATGaIz8nNTdHWFjNEuIgYeioONN_YrTAg3Z-gkcjThyn3kUibN29MuWTU6RGZJHglAkOusl9Fl2I1cZIdoJ-fQbx2LoaXi4zcMz5XfjWgPLKXoJ3TGowza7dprSuwK16thcfChM7",
+       expires: new Date().getTime(),
+      },
+     };
+
+     mailOptions.icalEvent = {
+      filename: "webinar.ics",
+      method: "publish",
+      content: calendar.toString(),
+     };
+
+     transporter.sendMail(mailOptions, (err, data) => {
+      if (err) {
+       console.log(err);
+       res.send(err);
+      } else {
+       res.json("sucessfully sent the mail");
+      }
+     });
     })
     .catch((err) => console.log(err));
   })

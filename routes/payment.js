@@ -23,26 +23,36 @@ router.route("/process").post((req, res) => {
     secure: true,
     auth: {
      type: "OAuth2",
-     user: "rahulkudum@gmail.com",
      clientId: "526565895378-7ep38biscsl6s9c369ef1att91djcfin.apps.googleusercontent.com",
      clientSecret: "vIxbXFxBlUBX_ELVBaPnO6FG",
-     refreshToken: "1//04X4fvo1qgr_2CgYIARAAGAQSNwF-L9IrRCnhcnl3saNzQAw-skzmQ2bfsGWhsHvUlu_yL1j5qqhld0hJko3PPCJ5mQ2d--8YvdU",
-     accessToken:
-      "ya29.a0ARrdaM-azZq380rDlbj43piJ0Q2dF-Vc-wcbXTOL4pBYaT6MUBHtsEhaoAFlRfMh58gJHadnZrCkOkdlxCMIcABYfrK1Is5eFdWgxPzhBtmBSRJo8vcxu9iB83mc0cHMq8TCzs5jid2rvvZMs29GaGjzdVNd",
-     expires: 3600,
     },
+   });
+
+   transporter.on("token", (token) => {
+    console.log("A new access token was generated");
+    console.log("User: %s", token.user);
+    console.log("Access Token: %s", token.accessToken);
+    console.log("Expires: %s", new Date(token.expires));
    });
 
    let mailOptions = {
     from: "rahulkudum@gmail.com",
     to: order.email,
     subject: "ARJUNA Book Dispatch Confirmation",
-    text: `Hello ${order.name}!\n\nYour order id ${order.orderid} has been dispatched. You will receive the package within 3-5 business days.\nYour order:\n\n${order.books}\n\nPlease do connect with us on YouTube. We conduct monthly free webinars to help students and parents face various challenges.\n\nRespectfully,\nARJUNA Group Trust`,
+    text: `Hello ${order.name}!\n\nYour order id ${order.orderid} has been dispatched. You will receive the package within 3-5 business days.\nYour order:\n\n${order.books}\nPlease do connect with us on YouTube. We conduct monthly free webinars to help students and parents face various challenges.\n\nRespectfully,\nARJUNA Group Trust`,
+    auth: {
+     user: "rahulkudum@gmail.com",
+     refreshToken: "1//04VuBYRmdXT1UCgYIARAAGAQSNwF-L9IrgzO6XvS9xBRqcioijQXjKlW_X3su7HrVyyteGruXj9dxGOfxKcFAcX6QceW3lnqHF1Q",
+     accessToken:
+      "ya29.a0ARrdaM-rc2swL1xsfJIWATGaIz8nNTdHWFjNEuIgYeioONN_YrTAg3Z-gkcjThyn3kUibN29MuWTU6RGZJHglAkOusl9Fl2I1cZIdoJ-fQbx2LoaXi4zcMz5XfjWgPLKXoJ3TGowza7dprSuwK16thcfChM7",
+     expires: new Date().getTime(),
+    },
    };
 
    transporter.sendMail(mailOptions, (err, data) => {
     if (err) {
-     res.send("error");
+     console.log(err);
+     res.send(err);
     } else {
      order.process = true;
      order
@@ -139,7 +149,7 @@ router.route("/verify").post(async (req, res) => {
    from: "rahulkudum@gmail.com",
    to: email,
    subject: "ARJUNA Book Purchase Confirmation",
-   text: `Hello ${name}!\n\nThank you for placing an order for:\n\n${books}\n\nYour order id is ${orderid}. In case of any query, please feel free to contact us on this email. Do mention the order id, so that we can better track your request. Your order will be dispatched in 3-5 business days. We will send you another confirmation email once the order is processed.\n\nRespectfully,\nARJUNA Group Trust`,
+   text: `Hello ${name}!\n\nThank you for placing an order for:\n\n${books}\nYour order id is ${orderid}. In case of any query, please feel free to contact us on this email. Do mention the order id, so that we can better track your request. Your order will be dispatched in 3-5 business days. We will send you another confirmation email once the order is processed.\n\nRespectfully,\nARJUNA Group Trust`,
   };
 
   transporter.sendMail(mailOptions, (err, data) => {
