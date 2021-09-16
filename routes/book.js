@@ -8,12 +8,15 @@ router.route("/").get((req, res) => {
 });
 
 router.route("/add").post((req, res) => {
- const name = req.body.name;
- const price = req.body.price;
+ const title = req.body.title;
  const image = req.body.image;
  const newBook = new Book({
-  name,
-  price,
+  title,
+  subtitle: "",
+  description: "",
+  chapters: [],
+  testimonials: [],
+  price: 0,
   image,
  });
 
@@ -21,6 +24,34 @@ router.route("/add").post((req, res) => {
   .save()
   .then((resp) => res.json(resp))
   .catch((err) => console.log(err));
+});
+
+router.route("/modify").post((req, res) => {
+ Book.findById(req.body.book._id)
+  .then((book) => {
+   console.log(book);
+   book.title = req.body.book.title;
+   book.subtitle = req.body.book.subtitle;
+   book.description = req.body.book.description;
+   book.chapters = req.body.book.chapters;
+   book.testimonials = req.body.book.testimonials;
+   book.price = Number(req.body.book.price);
+   console.log(book.price);
+   book
+    .save()
+    .then(() => {
+     res.json("sucessfully modified the book");
+    })
+    .catch((err) => console.log(err));
+  })
+  .catch((err) => console.log(err));
+});
+
+router.route("/find").post((req, res) => {
+ Book.findOne({ title: req.body.name }, (err, file) => {
+  if (!err) res.json(file);
+  else res.send(err);
+ });
 });
 
 router.route("/delete").post((req, res) => {
