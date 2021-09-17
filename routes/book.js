@@ -36,6 +36,7 @@ router.route("/modify").post((req, res) => {
    book.chapters = req.body.book.chapters;
    book.testimonials = req.body.book.testimonials;
    book.price = Number(req.body.book.price);
+   book.image = req.body.book.image;
    console.log(book.price);
    book
     .save()
