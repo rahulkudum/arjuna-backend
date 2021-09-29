@@ -2,6 +2,7 @@ const router = require("express").Router();
 let Order = require("../models/order.model");
 const nodemailer = require("nodemailer");
 const Razorpay = require("razorpay");
+let AWS = require("aws-sdk");
 
 const razorpay = new Razorpay({
  key_id: "rzp_test_WQG7sTrp3IgCeQ",
@@ -42,10 +43,9 @@ router.route("/process").post((req, res) => {
     text: `Hello ${order.name}!\n\nYour order id ${order.orderid} has been dispatched. You will receive the package within 3-5 business days.\nYour order:\n\n${order.books}\nPlease do connect with us on YouTube. We conduct monthly free webinars to help students and parents face various challenges.\n\nRespectfully,\nARJUNA Group Trust`,
     auth: {
      user: "rahulkudum@gmail.com",
-     refreshToken: "1//04F6fA84XoDUICgYIARAAGAQSNwF-L9Ir_KWH-twZkqQTQLXHmhCHmgfzCyof-o93U4MLX80w3UWsBLcD1ip7RLy3cqytHGWyey8",
+     refreshToken: "1//04kdBy1q5gXwXCgYIARAAGAQSNwF-L9Ir2laKK1aEE1D5oIU7YxPE1YeJEtkwrg482WeygIxSZyf-ufpfT017OXCdDYquJYbAgyc",
      accessToken:
-      "ya29.a0ARrdaM8LeMt7nk6zA8pWP8M5pe8wJ9E_KaRbyqDf1scADpr4zE5Fx6eEhLlHGVIm2J9V6XuJ0v0mFE3XMqbjn13W6DE4Z14rN2GGNl2Wx-1wHVreC0FAbgrwGN2m-SGncZpnlQl3ssAEwU4GYVNFbUa6WFoz",
-
+      "ya29.a0ARrdaM_7p0OuaTmeA-EE-bLAtZ-fzO9iB_Sh8Eu_2f93iY0lBQoFRRWvZ7Ri9E-bAtAVn4kerj-4yceTKIhM7EwBRFApjQauyI0SxfSAaxi_Isy2JovVFHP7bnsa8djUaFcmM59KLtaf_eLuKWReqcOUdhw2",
      expires: new Date().getTime(),
     },
    };
@@ -139,9 +139,9 @@ router.route("/verify").post(async (req, res) => {
     user: "rahulkudum@gmail.com",
     clientId: "526565895378-7ep38biscsl6s9c369ef1att91djcfin.apps.googleusercontent.com",
     clientSecret: "vIxbXFxBlUBX_ELVBaPnO6FG",
-    refreshToken: "1//04F6fA84XoDUICgYIARAAGAQSNwF-L9Ir_KWH-twZkqQTQLXHmhCHmgfzCyof-o93U4MLX80w3UWsBLcD1ip7RLy3cqytHGWyey8",
+    refreshToken: "1//04kdBy1q5gXwXCgYIARAAGAQSNwF-L9Ir2laKK1aEE1D5oIU7YxPE1YeJEtkwrg482WeygIxSZyf-ufpfT017OXCdDYquJYbAgyc",
     accessToken:
-     "ya29.a0ARrdaM8LeMt7nk6zA8pWP8M5pe8wJ9E_KaRbyqDf1scADpr4zE5Fx6eEhLlHGVIm2J9V6XuJ0v0mFE3XMqbjn13W6DE4Z14rN2GGNl2Wx-1wHVreC0FAbgrwGN2m-SGncZpnlQl3ssAEwU4GYVNFbUa6WFoz",
+     "ya29.a0ARrdaM_7p0OuaTmeA-EE-bLAtZ-fzO9iB_Sh8Eu_2f93iY0lBQoFRRWvZ7Ri9E-bAtAVn4kerj-4yceTKIhM7EwBRFApjQauyI0SxfSAaxi_Isy2JovVFHP7bnsa8djUaFcmM59KLtaf_eLuKWReqcOUdhw2",
     expires: 3600,
    },
   });
@@ -166,36 +166,66 @@ router.route("/verify").post(async (req, res) => {
 });
 
 router.route("/dummy").post(async (req, res) => {
+ // configure AWS SDK
+ AWS.config.update({
+  accessKeyId: "AKIAYUREQVWJGJHZKIF5",
+  secretAccessKey: "buDG92ByQysZlDdPzscgM1ZcBHrJhu5llKuEAG4Q",
+  region: "ap-south-1",
+ });
+
+ // create Nodemailer SES transporter
  let transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-   type: "OAuth2",
-   user: "rahulkudum@gmail.com",
-   clientId: "526565895378-7ep38biscsl6s9c369ef1att91djcfin.apps.googleusercontent.com",
-   clientSecret: "vIxbXFxBlUBX_ELVBaPnO6FG",
-   refreshToken: "1//04_FOv5PdrJfDCgYIARAAGAQSNwF-L9IrYrndoS--3KXeoQWldfaJa5n88JjW1H1AxGl6A5cswCT5cmqBL3wl3sjPllxBbHdO2_U",
-   accessToken:
-    "ya29.a0AfH6SMC9bM3-D7owC5E_gAXNgLMWR45oJlWDbdO8DTuAohiTfV4l9XEtGWOSDpuse8LLXF9yYZ0ivZFsVp-39QJRmDEWWUXnDsfpIOe83ppNFyUPqCcBbVwwqgMhloMNCmYRs-G2kaakAdTOZA8P4Z8fa9Tm",
-   expires: 3590,
+  SES: new AWS.SES({
+   apiVersion: "2010-12-01",
+  }),
+ });
+
+ // send some mail
+ transporter.sendMail(
+  {
+   from: "rahulkudum@gmail.com",
+   to: "rahulkudum@gmail.com",
+   subject: "Message",
+   text: "I hope this message gets sent!",
   },
- });
+  (err, info) => {
+   if (err) console.log(err);
+   console.log(info);
 
- let mailOptions = {
-  from: "rahulkudum@gmail.com",
-  to: "rahulrayalhk@gmail.com",
-  subject: "AOC book order",
-  text: "Thank for Purchasing AOC, you will be getting the book very soon 1",
- };
-
- transporter.sendMail(mailOptions, (err, data) => {
-  if (err) {
-   res.send(err);
-  } else {
-   res.send("sucess");
+   res.send("done");
   }
- });
+ );
+
+ //  let transporter = nodemailer.createTransport({
+ //   host: "smtp.gmail.com",
+ //   port: 465,
+ //   secure: true,
+ //   auth: {
+ //    type: "OAuth2",
+ //    user: "rahulkudum@gmail.com",
+ //    clientId: "526565895378-7ep38biscsl6s9c369ef1att91djcfin.apps.googleusercontent.com",
+ //    clientSecret: "vIxbXFxBlUBX_ELVBaPnO6FG",
+ //    refreshToken: "1//04_FOv5PdrJfDCgYIARAAGAQSNwF-L9IrYrndoS--3KXeoQWldfaJa5n88JjW1H1AxGl6A5cswCT5cmqBL3wl3sjPllxBbHdO2_U",
+ //    accessToken:
+ //     "ya29.a0AfH6SMC9bM3-D7owC5E_gAXNgLMWR45oJlWDbdO8DTuAohiTfV4l9XEtGWOSDpuse8LLXF9yYZ0ivZFsVp-39QJRmDEWWUXnDsfpIOe83ppNFyUPqCcBbVwwqgMhloMNCmYRs-G2kaakAdTOZA8P4Z8fa9Tm",
+ //    expires: 3590,
+ //   },
+ //  });
+
+ //  let mailOptions = {
+ //   from: "rahulkudum@gmail.com",
+ //   to: "rahulrayalhk@gmail.com",
+ //   subject: "AOC book order",
+ //   text: "Thank for Purchasing AOC, you will be getting the book very soon 1",
+ //  };
+
+ //  transporter.sendMail(mailOptions, (err, data) => {
+ //   if (err) {
+ //    res.send(err);
+ //   } else {
+ //    res.send("sucess");
+ //   }
+ //  });
 });
 
 module.exports = router;
