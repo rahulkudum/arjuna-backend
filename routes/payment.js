@@ -168,8 +168,8 @@ router.route("/verify").post(async (req, res) => {
 router.route("/dummy").post(async (req, res) => {
  // configure AWS SDK
  AWS.config.update({
-  accessKeyId: "AKIAYUREQVWJGJHZKIF5",
-  secretAccessKey: "buDG92ByQysZlDdPzscgM1ZcBHrJhu5llKuEAG4Q",
+  accessKeyId: "acesskeyid will be imported from .env file which will not be pushed to gitub",
+  secretAccessKey: "secretacesskey will be imported from .env file which will not be pushed to gitub",
   region: "ap-south-1",
  });
 

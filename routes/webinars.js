@@ -369,6 +369,18 @@ var returnRouter = function (io) {
   calendar.serve(res);
  });
 
+ router.route("/latest").get((req, res) => {
+   Webinar.find()
+    .then((webinars) =>{
+
+      for(let i=webinars.length-1; i>=0; i--){
+        if(webinars[i].institute==="") res.json(webinars[i]);
+      }
+    
+    })
+    .catch((err) => console.log(err));
+ });
+
  router.route("/delete").post((req, res) => {
   Webinar.findByIdAndDelete(req.body.id, (err) => {
    if (!err) res.send("sucessfully deleted");
