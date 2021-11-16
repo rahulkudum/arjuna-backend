@@ -29,7 +29,6 @@ router.route("/add").post((req, res) => {
 router.route("/modify").post((req, res) => {
  Book.findById(req.body.book._id)
   .then((book) => {
-   console.log(book);
    book.title = req.body.book.title;
    book.subtitle = req.body.book.subtitle;
    book.description = req.body.book.description;
@@ -37,7 +36,10 @@ router.route("/modify").post((req, res) => {
    book.testimonials = req.body.book.testimonials;
    book.price = Number(req.body.book.price);
    book.image = req.body.book.image;
-   console.log(book.price);
+   book.backimg1 = req.body.book.backimg1;
+   book.backimg2 = req.body.book.backimg2;
+   book.amazon = req.body.book.amazon;
+   book.youtube = req.body.book.youtube;
    book
     .save()
     .then(() => {

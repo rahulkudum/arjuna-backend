@@ -9,6 +9,10 @@ const bookSchema = new Schema({
  testimonials: Array,
  price: Number,
  image: String,
+ backimg1: String,
+ backimg2: String,
+ amazon: String,
+ youtube: String,
 });
 
 const Book = mongoose.model("Book", bookSchema);
