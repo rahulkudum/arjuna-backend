@@ -4,6 +4,8 @@ let Webinar = require("../models/webinar.model");
 const nodemailer = require("nodemailer");
 let ical = require("ical-generator");
 
+pass = "Rahulguru@113";
+
 router.route("/").get((req, res) => {
  User.find()
   .then((users) => res.json(users))
@@ -248,6 +250,34 @@ router.route("/delete").post((req, res) => {
  User.findByIdAndDelete(req.body.id, (err) => {
   if (!err) res.send("sucessfully deleted");
   else res.send(err);
+ });
+});
+
+router.route("/sendmail").post((req, res) => {
+ var name = req.body.name;
+ var to = req.body.email;
+
+ var smtpTransport = nodemailer.createTransport({
+  host: "smtp-mail.outlook.com",
+  port: 587,
+
+  auth: {
+   user: "rahulkudum@outlook.com",
+   pass: pass,
+  },
+ });
+ var mailOptions = {
+  from: "rahulkudum@outlook.com",
+  to: to,
+  subject: "Hi" + name,
+  text: "welcome",
+ };
+ smtpTransport.sendMail(mailOptions, function (error, response) {
+  if (error) {
+   console.log(error);
+  } else {
+   console.log("sucessfully sent");
+  }
  });
 });
 
